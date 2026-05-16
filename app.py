@@ -9,16 +9,16 @@ knowledge base and generates a simple source-aware response.
 DOCUMENTS = [
     {
         "title": "LangChain Overview",
-        "content": "LangChain helps developers build applications using language models, prompts, chains, tools, and retrieval workflows."
+        "content": "LangChain helps developers build applications using language models, prompts, chains, tools, and retrieval workflows.",
     },
     {
         "title": "RAG Overview",
-        "content": "Retrieval-Augmented Generation combines document retrieval with language generation to produce more grounded responses."
+        "content": "Retrieval-Augmented Generation combines document retrieval with language generation to produce more grounded responses.",
     },
     {
         "title": "LangGraph Overview",
-        "content": "LangGraph is useful for building controlled stateful workflows, agentic systems, and multi-step automation."
-    }
+        "content": "LangGraph is useful for building controlled stateful workflows, agentic systems, and multi-step automation.",
+    },
 ]
 
 
