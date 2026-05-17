@@ -1,33 +1,47 @@
 # AI Research Assistant RAG
 
-A retrieval-augmented generation assistant that helps summarize documents and answer questions using retrieved context.
+AI Research Assistant RAG is a starter retrieval-based research assistant that finds relevant information from a small knowledge base and generates a simple source-aware response.
+
+This project is designed as a foundation for a future Retrieval-Augmented Generation workflow using LangChain, vector search, and document loaders.
 
 ## Features
 
-- Document loading
-- Text chunking
-- Vector search
-- Context-aware answer generation
+- Simple document knowledge base
+- Query-based document retrieval
+- Basic relevance scoring
+- Source-aware response generation
+- Ready to extend with LangChain and vector databases
 
 ## Tech Stack
 
-Python · LangChain · FAISS · OpenAI API
-
-## Project Purpose
-
-This project is part of an AI automation portfolio focused on building practical tools using Python, LangChain, LangGraph, APIs, and workflow automation.
+- Python
+- LangChain
+- FAISS
+- OpenAI API
 
 ## How It Works
 
-Input data
-    ↓
-AI processing workflow
-    ↓
-Generated analysis / response
-    ↓
-Output report
+User question  
+↓  
+Search knowledge base  
+↓  
+Retrieve relevant document  
+↓  
+Generate answer  
+↓  
+Display source  
+
+## Example Output
+
+Question: What is RAG in AI applications?
+
+Answer: Based on the retrieved document, Retrieval-Augmented Generation combines document retrieval with language generation to produce more grounded responses.
+
+Source: RAG Overview
 
 ## Setup
 
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
-python app.py

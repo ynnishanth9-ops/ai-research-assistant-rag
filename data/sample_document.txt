@@ -1,0 +1,7 @@
+LangChain is a framework for building applications powered by language models. It helps developers connect prompts, models, tools, memory, and retrieval systems.
+
+Retrieval-Augmented Generation, also called RAG, is a technique where relevant documents are retrieved before generating an answer. This helps the AI response become more grounded and context-aware.
+
+FAISS is a vector search library that can store embeddings and retrieve similar text chunks based on semantic similarity.
+
+LangGraph is useful for building controlled, stateful, multi-step AI workflows and agentic automation systems.

@@ -1,62 +1,93 @@
 """
 AI Research Assistant RAG
 
-A starter research assistant that retrieves relevant text from a small
-knowledge base and generates a simple source-aware response.
+A starter Retrieval-Augmented Generation project using LangChain,
+FAISS vector search, and OpenAI-powered answer generation.
 """
 
+from pathlib import Path
 
-DOCUMENTS = [
-    {
-        "title": "LangChain Overview",
-        "content": "LangChain helps developers build applications using language models, prompts, chains, tools, and retrieval workflows.",
-    },
-    {
-        "title": "RAG Overview",
-        "content": "Retrieval-Augmented Generation combines document retrieval with language generation to produce more grounded responses.",
-    },
-    {
-        "title": "LangGraph Overview",
-        "content": "LangGraph is useful for building controlled stateful workflows, agentic systems, and multi-step automation.",
-    },
-]
+from dotenv import load_dotenv
+from langchain_community.document_loaders import TextLoader
+from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-def retrieve_documents(query):
-    query_words = set(query.lower().split())
-    results = []
-
-    for document in DOCUMENTS:
-        content_words = set(document["content"].lower().split())
-        score = len(query_words.intersection(content_words))
-
-        if score > 0:
-            results.append((score, document))
-
-    results.sort(reverse=True, key=lambda item: item[0])
-    return [document for score, document in results]
+load_dotenv()
 
 
-def generate_answer(query, retrieved_docs):
-    if not retrieved_docs:
-        return "No relevant context found."
+DATA_FILE = Path("data/sample_document.txt")
 
-    context = retrieved_docs[0]
 
-    return (
-        f"Question: {query}\n\n"
-        f"Answer: Based on the retrieved document, {context['content']}\n\n"
-        f"Source: {context['title']}"
+def load_documents():
+    loader = TextLoader(str(DATA_FILE), encoding="utf-8")
+    return loader.load()
+
+
+def split_documents(documents):
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=300,
+        chunk_overlap=50
+    )
+    return splitter.split_documents(documents)
+
+
+def create_vector_store(chunks):
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    return FAISS.from_documents(chunks, embeddings)
+
+
+def retrieve_context(vector_store, query):
+    results = vector_store.similarity_search(query, k=2)
+    return "\n\n".join([doc.page_content for doc in results])
+
+
+def generate_answer(query, context):
+    model = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+
+    prompt = f"""
+You are a research assistant. Answer the question using only the context below.
+
+Question:
+{query}
+
+Context:
+{context}
+
+Answer:
+"""
+
+    response = model.invoke(prompt)
+    return response.content
+
+
+def save_output(query, answer):
+    output_path = Path("outputs/research_answer.md")
+    output_path.parent.mkdir(exist_ok=True)
+
+    output_path.write_text(
+        f"# Research Answer\n\n## Question\n{query}\n\n## Answer\n{answer}\n",
+        encoding="utf-8"
     )
 
 
 def main():
-    query = "What is RAG in AI applications?"
+    query = "What is Retrieval-Augmented Generation?"
 
-    retrieved_docs = retrieve_documents(query)
-    answer = generate_answer(query, retrieved_docs)
+    documents = load_documents()
+    chunks = split_documents(documents)
+    vector_store = create_vector_store(chunks)
 
+    context = retrieve_context(vector_store, query)
+    answer = generate_answer(query, context)
+
+    print("Question:")
+    print(query)
+    print("\nAnswer:")
     print(answer)
+
+    save_output(query, answer)
 
 
 if __name__ == "__main__":
